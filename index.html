@@ -1,0 +1,506 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="color-scheme" content="light dark">
+  <meta name="description" content="A fictional restaurant demo for Spice Route Kitchen, Lahore.">
+  <link rel="icon" href="data:,">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Bodoni+Moda:opsz,wght@6..96,600;6..96,700;6..96,800&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <title>Spice Route Kitchen — Demo Website</title>
+  <style>
+    :root {
+      color-scheme: light dark;
+      --ink: #241714;
+      --muted: #6d5c55;
+      --paper: #fbf7ef;
+      --paper-2: #f1e7d8;
+      --surface: #fffdf8;
+      --surface-strong: #fff7e9;
+      --line: #d9cbbd;
+      --brand: #9e2f20;
+      --brand-deep: #6f1c15;
+      --accent: #e36f2d;
+      --gold: #c9962f;
+      --green: #31583d;
+      --charcoal: #201a18;
+      --white: #fffaf2;
+      --shadow: 0 18px 50px rgba(71, 31, 20, .12);
+      --nav-bg: rgba(251,247,239,.94);
+    }
+    @media (prefers-color-scheme: dark) {
+      :root {
+        --ink: #fff4e5;
+        --muted: #cbb9aa;
+        --paper: #17110f;
+        --paper-2: #211815;
+        --surface: #241a17;
+        --surface-strong: #2b1e19;
+        --line: #49372f;
+        --brand: #d4533e;
+        --brand-deep: #9e2f20;
+        --accent: #f18849;
+        --gold: #e2b657;
+        --green: #6f9b7b;
+        --charcoal: #110d0c;
+        --white: #fff8ec;
+        --shadow: 0 18px 50px rgba(0,0,0,.34);
+        --nav-bg: rgba(23,17,15,.94);
+      }
+    }
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; scroll-padding-top: 78px; }
+    body {
+      margin: 0;
+      background: var(--paper);
+      color: var(--ink);
+      font-family: "Manrope", sans-serif;
+      line-height: 1.6;
+      overflow-x: hidden;
+    }
+    body.nav-open { overflow: hidden; }
+    a { color: inherit; }
+    button, input, select { font: inherit; }
+    button, a { -webkit-tap-highlight-color: transparent; }
+    img, svg { display: block; max-width: 100%; }
+    :focus-visible { outline: 3px solid var(--gold); outline-offset: 3px; }
+    .skip-link { position: fixed; left: 12px; top: -60px; z-index: 200; padding: 10px 16px; background: var(--ink); color: var(--paper); text-decoration: none; }
+    .skip-link:focus { top: 12px; }
+    .container { width: min(1160px, calc(100% - 40px)); margin-inline: auto; }
+    .demo-ribbon {
+      position: relative;
+      z-index: 101;
+      text-align: center;
+      padding: 7px 20px;
+      background: var(--charcoal);
+      color: #fff4e7;
+      font-size: .72rem;
+      font-weight: 800;
+      letter-spacing: .14em;
+      text-transform: uppercase;
+    }
+    .site-header {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      background: var(--nav-bg);
+      border-bottom: 1px solid color-mix(in srgb, var(--line) 70%, transparent);
+      backdrop-filter: blur(12px);
+    }
+    .nav-wrap { min-height: 72px; display: flex; align-items: center; justify-content: space-between; gap: 28px; }
+    .brand { display: inline-flex; align-items: center; gap: 11px; text-decoration: none; font-family: "Bodoni Moda", serif; font-weight: 800; font-size: 1.15rem; line-height: 1; }
+    .brand-mark { width: 34px; height: 34px; border-radius: 50%; display: grid; place-items: center; color: #fff7eb; background: var(--brand); box-shadow: inset 0 0 0 3px rgba(255,255,255,.18); }
+    .brand-mark svg { width: 20px; }
+    .nav-links { list-style: none; display: flex; align-items: center; gap: 26px; margin: 0; padding: 0; }
+    .nav-links a { font-size: .82rem; font-weight: 700; text-decoration: none; color: var(--muted); transition: color .2s ease; }
+    .nav-links a:hover { color: var(--brand); }
+    .nav-order { padding: 9px 16px; background: var(--brand); color: #fff8ef !important; border-radius: 999px; }
+    .menu-toggle { display: none; width: 44px; height: 44px; border: 0; background: transparent; color: var(--ink); cursor: pointer; }
+    .menu-toggle span { display: block; width: 24px; height: 2px; margin: 5px auto; background: currentColor; transition: transform .2s ease, opacity .2s ease; }
+    .hero {
+      position: relative;
+      min-height: 680px;
+      display: grid;
+      align-items: center;
+      overflow: hidden;
+      background: var(--charcoal);
+      color: #fff7eb;
+    }
+    .hero::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background:
+        radial-gradient(circle at 82% 35%, rgba(227,111,45,.23) 0 20%, transparent 48%),
+        linear-gradient(110deg, rgba(158,47,32,.25), transparent 55%);
+    }
+    .hero::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      opacity: .08;
+      background-image: repeating-linear-gradient(45deg, transparent 0 16px, #fff 17px 18px);
+      mask-image: linear-gradient(to right, transparent, #000);
+    }
+    .hero-grid { position: relative; z-index: 1; display: grid; grid-template-columns: 1.03fr .97fr; align-items: center; gap: 56px; padding: 86px 0 94px; }
+    .eyebrow { display: inline-flex; align-items: center; gap: 9px; color: #ffc281; font-size: .78rem; font-weight: 800; letter-spacing: .15em; text-transform: uppercase; }
+    .eyebrow::before { content: ""; width: 28px; height: 1px; background: currentColor; }
+    h1, h2, h3 { font-family: "Bodoni Moda", serif; line-height: 1.06; margin: 0; }
+    h1 { max-width: 650px; margin-top: 18px; font-size: clamp(3.15rem, 7vw, 6.8rem); letter-spacing: -.055em; }
+    .hero-copy > p { max-width: 580px; margin: 24px 0 0; color: #dfcfc0; font-size: clamp(1rem, 1.6vw, 1.18rem); }
+    .hero-actions { display: flex; flex-wrap: wrap; gap: 13px; margin-top: 34px; }
+    .btn { min-height: 50px; display: inline-flex; justify-content: center; align-items: center; gap: 9px; padding: 0 22px; border: 1px solid transparent; border-radius: 4px; font-weight: 800; text-decoration: none; cursor: pointer; transition: background .2s ease, color .2s ease, border-color .2s ease, transform .2s ease; }
+    .btn:hover { transform: translateY(-2px); }
+    .btn-primary { background: var(--accent); color: #1d100b; }
+    .btn-primary:hover { background: #ff9b5d; }
+    .btn-secondary { border-color: rgba(255,255,255,.38); color: #fff7eb; background: rgba(255,255,255,.06); }
+    .btn-secondary:hover { border-color: #fff7eb; background: rgba(255,255,255,.12); }
+    .hero-note { display: flex; align-items: center; gap: 10px; margin-top: 30px; color: #bdaea4; font-size: .78rem; }
+    .hero-note i { width: 6px; height: 6px; background: #f19a61; border-radius: 50%; box-shadow: 0 0 0 5px rgba(241,154,97,.12); }
+    .dish-stage { position: relative; min-height: 520px; display: grid; place-items: center; }
+    .stage-copy { position: absolute; right: 8px; bottom: 28px; font-family: "Bodoni Moda", serif; color: #f7c47e; font-size: 1rem; font-style: italic; transform: rotate(-4deg); }
+    .platter { position: relative; width: min(480px, 88vw); aspect-ratio: 1; border-radius: 50%; background: #c8a56b; box-shadow: 0 40px 60px rgba(0,0,0,.4), inset 0 0 0 10px #6c3c23, inset 0 0 0 18px #c68f3e, inset 0 0 0 23px #3d251b; transform: rotate(-7deg); }
+    .plate { position: absolute; inset: 12%; border-radius: 50%; background: radial-gradient(circle at 45% 45%, #f4d893 0 11%, #df9e42 12% 38%, #97361f 39% 65%, #4b2017 66% 68%, #d4a84e 69% 100%); box-shadow: inset 0 0 30px rgba(47,16,8,.4); }
+    .karahi-ring { position: absolute; inset: 25%; border-radius: 50%; border: 10px solid #211816; box-shadow: inset 0 0 0 5px #835135, 0 0 0 4px #b98755; }
+    .karahi-ring::before, .karahi-ring::after { content: ""; position: absolute; width: 24%; height: 13%; top: 40%; border: 9px solid #211816; }
+    .karahi-ring::before { left: -31%; border-right: 0; border-radius: 30px 0 0 30px; }
+    .karahi-ring::after { right: -31%; border-left: 0; border-radius: 0 30px 30px 0; }
+    .garnish { position: absolute; width: 7%; height: 19%; border-radius: 50%; background: #2f7a3d; transform-origin: 50% 190%; }
+    .g1 { top: 24%; left: 47%; transform: rotate(5deg); } .g2 { top: 28%; left: 38%; transform: rotate(-32deg); } .g3 { top: 28%; left: 56%; transform: rotate(38deg); }
+    .tomato { position: absolute; width: 10%; aspect-ratio: 1; border-radius: 50%; background: #e9542f; border: 3px solid #ff9a66; }
+    .t1 { left: 32%; top: 45%; } .t2 { right: 31%; top: 48%; } .t3 { left: 46%; bottom: 28%; }
+    .steam { position: absolute; top: 6%; left: 50%; width: 18px; height: 100px; border-left: 3px solid rgba(255,255,255,.35); border-radius: 50%; transform: rotate(10deg); }
+    .steam::before, .steam::after { content: ""; position: absolute; width: 22px; height: 80px; border-left: 3px solid rgba(255,255,255,.24); border-radius: 50%; }
+    .steam::before { left: -44px; top: 18px; transform: rotate(-14deg); } .steam::after { left: 38px; top: 9px; transform: rotate(11deg); }
+    section { padding: 104px 0; }
+    .section-heading { max-width: 720px; margin-bottom: 48px; }
+    .section-kicker { color: var(--brand); font-size: .76rem; font-weight: 800; letter-spacing: .15em; text-transform: uppercase; }
+    .section-heading h2 { margin-top: 10px; font-size: clamp(2.45rem, 5vw, 4.6rem); letter-spacing: -.045em; }
+    .section-heading p { max-width: 620px; margin: 16px 0 0; color: var(--muted); }
+    .about { background: var(--surface); }
+    .about-grid { display: grid; grid-template-columns: .82fr 1.18fr; gap: 80px; align-items: start; }
+    .about h2 { font-size: clamp(2.6rem, 5vw, 4.8rem); letter-spacing: -.05em; }
+    .about-copy p { margin: 0 0 18px; color: var(--muted); font-size: 1.03rem; }
+    .about-copy p:first-child { color: var(--ink); font-size: 1.19rem; font-weight: 600; }
+    .about-facts { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1px; margin-top: 34px; background: var(--line); border: 1px solid var(--line); }
+    .fact { padding: 20px; background: var(--surface); }
+    .fact strong { display: block; color: var(--brand); font-family: "Bodoni Moda", serif; font-size: 1.4rem; }
+    .fact span { color: var(--muted); font-size: .78rem; }
+    .menu-section { background: var(--paper); }
+    .menu-header { display: flex; justify-content: space-between; gap: 28px; align-items: end; }
+    .menu-header .section-heading { margin-bottom: 30px; }
+    .menu-note { margin-bottom: 34px; max-width: 250px; color: var(--muted); font-size: .78rem; }
+    .tabs { display: flex; flex-wrap: wrap; gap: 8px; padding-bottom: 30px; border-bottom: 1px solid var(--line); }
+    .tab { border: 1px solid var(--line); background: transparent; color: var(--muted); padding: 9px 14px; border-radius: 999px; font-size: .78rem; font-weight: 800; cursor: pointer; }
+    .tab[aria-selected="true"] { background: var(--brand); border-color: var(--brand); color: #fff8ee; }
+    .menu-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 0 56px; margin-top: 20px; }
+    .menu-item { display: grid; grid-template-columns: 1fr auto; gap: 5px 18px; align-items: baseline; padding: 22px 0; border-bottom: 1px solid var(--line); }
+    .menu-item[hidden] { display: none; }
+    .menu-item h3 { font-family: "Manrope", sans-serif; font-size: .98rem; font-weight: 800; }
+    .menu-item p { grid-column: 1; margin: 0; color: var(--muted); font-size: .78rem; }
+    .price { color: var(--brand); font-weight: 800; font-size: .9rem; white-space: nowrap; }
+    .gallery { background: var(--charcoal); color: #fff6e9; }
+    .gallery .section-kicker { color: #f2aa63; }
+    .gallery .section-heading p { color: #c7b8ac; }
+    .gallery-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; }
+    .food-card { margin: 0; position: relative; min-height: 290px; display: grid; grid-template-rows: 1fr auto; overflow: hidden; background: #2d211d; border: 1px solid #45342d; }
+    .food-art { position: relative; min-height: 230px; display: grid; place-items: center; overflow: hidden; background: radial-gradient(circle at 50% 35%, #674833, #271c18 72%); }
+    .food-card figcaption { padding: 17px 18px; font-family: "Bodoni Moda", serif; font-size: 1rem; border-top: 1px solid #45342d; }
+    .mini-plate { position: relative; width: 154px; aspect-ratio: 1; border-radius: 50%; background: #e1c693; box-shadow: 0 18px 28px rgba(0,0,0,.35), inset 0 0 0 9px #faf0d2, inset 0 0 0 12px #ad7c3f; }
+    .rice { position: absolute; inset: 21%; border-radius: 48%; background: repeating-linear-gradient(32deg, #f6dd8e 0 3px, #cc8637 4px 6px, #fff0b2 7px 10px); transform: rotate(-8deg); }
+    .rice::before, .rice::after { content: ""; position: absolute; width: 35px; height: 20px; background: #8d3224; border-radius: 60% 35%; transform: rotate(24deg); }
+    .rice::before { left: 10px; top: 35px; } .rice::after { right: 12px; top: 55px; }
+    .kebab-set { width: 160px; height: 150px; position: relative; transform: rotate(-8deg); }
+    .skewer { position: absolute; left: 10px; width: 145px; height: 6px; background: #d6c1a0; border-radius: 8px; }
+    .skewer::before { content: ""; position: absolute; left: 25px; top: -9px; width: 96px; height: 24px; border-radius: 40%; background: repeating-linear-gradient(90deg, #7e2f20 0 17px, #c15d2d 18px 27px); box-shadow: inset 0 3px #da8a4e; }
+    .s1 { top: 35px; } .s2 { top: 69px; } .s3 { top: 103px; }
+    .naan { width: 155px; height: 120px; border-radius: 55% 45% 52% 48%; background: radial-gradient(circle at 32% 38%, #783719 0 3px, transparent 4px), radial-gradient(circle at 65% 60%, #8b4220 0 4px, transparent 5px), radial-gradient(circle at 62% 22%, #8b4220 0 3px, transparent 4px), #d79142; box-shadow: inset 8px -10px #b9662f, inset -7px 10px #efb95e, 0 18px 28px rgba(0,0,0,.35); transform: rotate(8deg); }
+    .handi { position: relative; width: 155px; height: 100px; margin-top: 30px; border-radius: 15% 15% 48% 48%; background: linear-gradient(#9a4c28, #3d2118); box-shadow: inset 0 5px #d48042, 0 20px 25px rgba(0,0,0,.35); }
+    .handi::before { content: ""; position: absolute; width: 112px; height: 25px; border-radius: 50%; background: #dc843c; left: 21px; top: -12px; box-shadow: inset 0 5px #f3ab60; }
+    .handi::after { content: ""; position: absolute; width: 45px; height: 18px; border-radius: 50% 50% 0 0; background: #804125; top: -32px; left: 56px; }
+    .tikka { position: relative; width: 160px; height: 120px; }
+    .tikka i { position: absolute; width: 62px; height: 47px; border-radius: 55% 35% 60% 30%; background: linear-gradient(135deg, #ed7840, #922a1e); border: 4px solid #622116; box-shadow: inset 8px 5px #f59b5d; }
+    .tikka i:nth-child(1){left:15px;top:18px;transform:rotate(-14deg)} .tikka i:nth-child(2){right:15px;top:28px;transform:rotate(18deg)} .tikka i:nth-child(3){left:50px;bottom:8px;transform:rotate(5deg)}
+    .dessert { width: 150px; height: 110px; position: relative; border-radius: 50%; background: #c78939; box-shadow: inset 0 0 0 11px #e5ba70, 0 17px 26px rgba(0,0,0,.35); }
+    .dessert i { position: absolute; width: 38px; aspect-ratio: 1; border-radius: 50%; background: radial-gradient(circle at 36% 28%, #d98739, #78331d 70%); }
+    .dessert i:nth-child(1){left:28px;top:28px}.dessert i:nth-child(2){right:28px;top:28px}.dessert i:nth-child(3){left:57px;bottom:12px}
+    .lassi { width: 82px; height: 150px; border-radius: 10px 10px 22px 22px; background: linear-gradient(to right, #efe4c2, #fffceb 48%, #dbc78f); border: 5px solid rgba(255,255,255,.3); box-shadow: 0 17px 26px rgba(0,0,0,.35); }
+    .lassi::before { content: ""; position: absolute; width: 74px; height: 15px; margin-left: -1px; margin-top: -8px; border-radius: 50%; background: #fbf1d4; }
+    .karahi-mini { position: relative; width: 155px; aspect-ratio: 1; border-radius: 50%; background: radial-gradient(circle, #e8883d 0 12%, #ad3b24 13% 54%, #1c1715 56% 64%, #8f5a37 65%); box-shadow: 0 17px 26px rgba(0,0,0,.35); }
+    .karahi-mini::before, .karahi-mini::after { content: ""; position: absolute; top: 44%; width: 43px; height: 25px; border: 8px solid #8f5a37; }
+    .karahi-mini::before { left: -29px; border-right:0; border-radius:24px 0 0 24px}.karahi-mini::after{right:-29px;border-left:0;border-radius:0 24px 24px 0}
+    .service { background: var(--surface); }
+    .service-grid { display: grid; grid-template-columns: .86fr 1.14fr; gap: 70px; }
+    .hours-panel { padding: 38px; background: var(--brand); color: #fff8ef; }
+    .hours-panel h2 { font-size: 2.8rem; }
+    .hours-list { margin: 28px 0 0; }
+    .hours-row { display: flex; justify-content: space-between; gap: 18px; padding: 15px 0; border-bottom: 1px solid rgba(255,255,255,.25); font-size: .9rem; }
+    .hours-row strong { white-space: nowrap; }
+    .friday-note { margin: 20px 0 0; padding: 15px; background: rgba(0,0,0,.15); color: #ffe8d1; font-size: .82rem; }
+    .reservation { padding: 4px 0; }
+    .reservation h2 { font-size: clamp(2.4rem, 4vw, 3.8rem); }
+    .reservation > p { color: var(--muted); margin: 12px 0 28px; }
+    .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+    .field { display: grid; gap: 7px; }
+    .field label { font-size: .76rem; font-weight: 800; }
+    .field input, .field select { width: 100%; height: 49px; border: 1px solid var(--line); border-radius: 2px; background: var(--paper); color: var(--ink); padding: 0 14px; }
+    .field input[aria-invalid="true"], .field select[aria-invalid="true"] { border-color: #cf3d2c; }
+    .error { min-height: 17px; color: #c83c2c; font-size: .7rem; }
+    .form-actions { margin-top: 8px; display: flex; align-items: center; gap: 18px; }
+    .form-actions .btn { background: var(--ink); color: var(--paper); border: 0; }
+    .form-disclaimer { color: var(--muted); font-size: .72rem; }
+    .success-box { display: none; padding: 30px; background: color-mix(in srgb, var(--green) 12%, var(--surface)); border: 1px solid var(--green); }
+    .success-box.show { display: block; }
+    .success-box h3 { color: var(--green); font-size: 1.8rem; }
+    .success-box p { margin: 9px 0 0; color: var(--muted); }
+    .location { background: var(--paper-2); }
+    .location-grid { display: grid; grid-template-columns: .9fr 1.1fr; min-height: 440px; }
+    .location-copy { padding: 54px; background: var(--charcoal); color: #fff4e6; }
+    .location-copy .section-kicker { color: #f2aa63; }
+    .location-copy h2 { margin-top: 10px; font-size: clamp(2.5rem, 5vw, 4rem); }
+    .location-copy address { margin-top: 34px; font-style: normal; color: #d5c3b6; }
+    .location-copy a { display: block; margin-top: 14px; color: #ffc27f; font-weight: 800; text-decoration: none; }
+    .placeholder-note { margin-top: 26px; font-size: .74rem; color: #a8968c; }
+    .locator-panel { position: relative; display: grid; place-items: center; min-height: 380px; padding: 36px; overflow: hidden; background: var(--surface); }
+    .locator-panel::before { content: ""; position: absolute; inset: 0; opacity: .36; background-image: linear-gradient(var(--line) 1px, transparent 1px), linear-gradient(90deg, var(--line) 1px, transparent 1px); background-size: 44px 44px; transform: rotate(8deg) scale(1.25); }
+    .locator-card { position: relative; z-index: 1; width: min(330px, 100%); padding: 30px; text-align: center; background: var(--surface); border: 1px solid var(--line); box-shadow: var(--shadow); }
+    .pin { width: 64px; height: 64px; margin: 0 auto 20px; display: grid; place-items: center; border-radius: 50% 50% 50% 8%; transform: rotate(-45deg); background: var(--brand); color: #fff; }
+    .pin svg { width: 27px; transform: rotate(45deg); }
+    .locator-card strong { display: block; font-family: "Bodoni Moda", serif; font-size: 1.35rem; }
+    .locator-card span { display: block; margin-top: 7px; color: var(--muted); font-size: .8rem; }
+    footer { background: #110d0c; color: #cfbeb1; padding: 34px 0; }
+    .footer-wrap { display: flex; justify-content: space-between; align-items: center; gap: 22px; }
+    footer strong { color: #fff3e4; }
+    footer p { margin: 4px 0 0; font-size: .72rem; }
+    .back-top { color: #f1a15e; font-size: .78rem; font-weight: 800; text-decoration: none; }
+    @media (max-width: 920px) {
+      .menu-toggle { display: block; position: relative; z-index: 2; }
+      .nav-links { display: none; position: absolute; top: 100%; left: 0; right: 0; max-height: calc(100dvh - 104px); overflow-y: auto; padding: 12px 28px 28px; flex-direction: column; align-items: stretch; gap: 0; background: var(--paper); border-bottom: 1px solid var(--line); box-shadow: 0 20px 35px rgba(0,0,0,.18); }
+      .nav-links.open { display: flex; }
+      .nav-links li { border-bottom: 1px solid var(--line); }
+      .nav-links a { display: block; padding: 18px 0; color: var(--ink); font-size: 1.1rem; }
+      .nav-order { margin-top: 20px; text-align: center; }
+      .menu-toggle[aria-expanded="true"] span:nth-child(1) { transform: translateY(7px) rotate(45deg); }
+      .menu-toggle[aria-expanded="true"] span:nth-child(2) { opacity: 0; }
+      .menu-toggle[aria-expanded="true"] span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
+      .hero-grid, .about-grid, .service-grid, .location-grid { grid-template-columns: 1fr; }
+      .hero-grid { padding-top: 70px; gap: 10px; }
+      .dish-stage { min-height: 430px; }
+      .about-grid { gap: 32px; }
+      .gallery-grid { grid-template-columns: 1fr 1fr; }
+      .location-copy { padding: 44px; }
+    }
+    @media (max-width: 640px) {
+      .container { width: min(100% - 28px, 1160px); }
+      section { padding: 76px 0; }
+      .demo-ribbon { font-size: .64rem; }
+      .brand { font-size: 1rem; }
+      .brand-mark { width: 31px; height: 31px; }
+      .hero { min-height: auto; }
+      .hero-grid { padding: 64px 0 70px; }
+      h1 { font-size: clamp(3rem, 16vw, 4.7rem); }
+      .hero-actions { flex-direction: column; }
+      .hero-actions .btn { width: 100%; }
+      .dish-stage { min-height: 350px; }
+      .platter { width: 330px; max-width: 90%; }
+      .stage-copy { bottom: 5px; }
+      .menu-header { display: block; }
+      .menu-note { margin: -10px 0 25px; }
+      .menu-grid { grid-template-columns: 1fr; }
+      .tabs { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); padding-bottom: 17px; }
+      .tab { min-width: 0; padding-inline: 8px; white-space: normal; }
+      .gallery-grid { grid-template-columns: 1fr; }
+      .food-card { min-height: 270px; }
+      .about-facts { grid-template-columns: 1fr; }
+      .form-grid { grid-template-columns: 1fr; }
+      .form-actions { align-items: stretch; flex-direction: column; }
+      .form-actions .btn { width: 100%; }
+      .hours-panel, .location-copy { padding: 30px 24px; }
+      .location-grid { width: calc(100% + 28px); margin-left: -14px; }
+      .locator-panel { min-height: 340px; }
+      .footer-wrap { align-items: flex-start; flex-direction: column; }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      html { scroll-behavior: auto; }
+      *, *::before, *::after { transition-duration: .01ms !important; animation-duration: .01ms !important; }
+    }
+  </style>
+</head>
+<body>
+  <a class="skip-link" href="#main">Skip to content</a>
+  <div class="demo-ribbon">Portfolio demo · Fictional restaurant · No real orders or reservations</div>
+  <header class="site-header">
+    <div class="container nav-wrap">
+      <a class="brand" href="#home" aria-label="Spice Route Kitchen home">
+        <span class="brand-mark" aria-hidden="true"><svg viewBox="0 0 32 32" fill="none"><path d="M7 19c1 6 5 8 9 8s8-2 9-8H7Z" fill="currentColor"/><path d="M4 16h24M9 12c0-3 2-5 4-6m5 6c0-3 2-5 4-6" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"/></svg></span>
+        <span>Spice Route Kitchen</span>
+      </a>
+      <button class="menu-toggle" type="button" aria-expanded="false" aria-controls="main-menu" aria-label="Open navigation menu"><span></span><span></span><span></span></button>
+      <ul class="nav-links" id="main-menu">
+        <li><a href="#home">Home</a></li><li><a href="#about">About</a></li><li><a href="#menu">Menu</a></li><li><a href="#gallery">Gallery</a></li><li><a href="#hours">Hours</a></li><li><a href="#contact">Contact</a></li><li><a class="nav-order" href="https://wa.me/923000000000" target="_blank" rel="noopener">Order on WhatsApp</a></li>
+      </ul>
+    </div>
+  </header>
+
+  <main id="main">
+    <section class="hero" id="home">
+      <div class="container hero-grid">
+        <div class="hero-copy">
+          <span class="eyebrow">Desi soul · Lahore heat</span>
+          <h1>Lahore’s table, alive with spice.</h1>
+          <p>Fire-kissed barbecue, slow-cooked karahis and fragrant rice dishes made for lively tables and generous appetites.</p>
+          <div class="hero-actions">
+            <a class="btn btn-primary" href="#menu">View menu <span aria-hidden="true">↓</span></a>
+            <a class="btn btn-secondary" href="https://wa.me/923000000000" target="_blank" rel="noopener">Order on WhatsApp <span aria-hidden="true">↗</span></a>
+          </div>
+          <div class="hero-note"><i aria-hidden="true"></i> Open daily, noon till midnight</div>
+        </div>
+        <div class="dish-stage" aria-label="Stylized illustration of a hot chicken karahi">
+          <div class="platter" aria-hidden="true"><div class="plate"></div><div class="karahi-ring"></div><i class="garnish g1"></i><i class="garnish g2"></i><i class="garnish g3"></i><i class="tomato t1"></i><i class="tomato t2"></i><i class="tomato t3"></i><i class="steam"></i></div>
+          <span class="stage-copy">Fresh from the karahi</span>
+        </div>
+      </div>
+    </section>
+
+    <section class="about" id="about">
+      <div class="container about-grid">
+        <div><span class="section-kicker">Our story</span><h2>A family table with Lahore at heart.</h2></div>
+        <div class="about-copy">
+          <p>Spice Route Kitchen is imagined as a neighbourhood desi restaurant built around one simple idea: the best meals arrive hot, generous and ready to be shared.</p>
+          <p>Our fictional kitchen borrows from family recipes across Punjab—smoky charcoal grills, hand-ground masalas and karahis finished to order. The menu keeps familiar favourites close while giving every plate a bright, contemporary finish.</p>
+          <p>Whether it is a quick biryani lunch or a full family dinner, the welcome stays warm and the naan keeps coming.</p>
+          <div class="about-facts" aria-label="Restaurant highlights"><div class="fact"><strong>Charcoal</strong><span>Grilled to order</span></div><div class="fact"><strong>Fresh</strong><span>Small-batch masalas</span></div><div class="fact"><strong>Family</strong><span>Sharing-style portions</span></div></div>
+        </div>
+      </div>
+    </section>
+
+    <section class="menu-section" id="menu">
+      <div class="container">
+        <div class="menu-header"><div class="section-heading"><span class="section-kicker">From the kitchen</span><h2>The menu</h2><p>Beloved Pakistani classics, balanced spice and portions made for sharing.</p></div><p class="menu-note">Prices shown in PKR. This is sample menu content for a fictional demo restaurant.</p></div>
+        <div class="tabs" role="tablist" aria-label="Filter menu by category">
+          <button class="tab" role="tab" aria-selected="true" data-filter="all">All</button>
+          <button class="tab" role="tab" aria-selected="false" data-filter="bbq">BBQ</button>
+          <button class="tab" role="tab" aria-selected="false" data-filter="karahi">Karahi &amp; Handi</button>
+          <button class="tab" role="tab" aria-selected="false" data-filter="rice">Biryani &amp; Rice</button>
+          <button class="tab" role="tab" aria-selected="false" data-filter="breads">Breads</button>
+          <button class="tab" role="tab" aria-selected="false" data-filter="desserts">Desserts</button>
+          <button class="tab" role="tab" aria-selected="false" data-filter="beverages">Beverages</button>
+        </div>
+        <div class="menu-grid" aria-live="polite">
+          <article class="menu-item" data-category="bbq"><h3>Chicken Tikka</h3><span class="price">Rs 280</span><p>Charred quarter chicken, lemon and mint chutney</p></article>
+          <article class="menu-item" data-category="bbq"><h3>Seekh Kabab (4 pcs)</h3><span class="price">Rs 480</span><p>Spiced minced beef, onion and coriander</p></article>
+          <article class="menu-item" data-category="bbq"><h3>Malai Boti</h3><span class="price">Rs 620</span><p>Creamy boneless chicken with green chilli</p></article>
+          <article class="menu-item" data-category="bbq"><h3>Mixed Grill Platter</h3><span class="price">Rs 1,650</span><p>Tikka, malai boti, seekh kabab and grilled vegetables</p></article>
+          <article class="menu-item" data-category="karahi"><h3>Chicken Karahi</h3><span class="price">Half Rs 950 · Full Rs 1,800</span><p>Tomato, ginger, green chilli and crushed coriander</p></article>
+          <article class="menu-item" data-category="karahi"><h3>Mutton Karahi</h3><span class="price">Half Rs 1,650 · Full Rs 3,100</span><p>Slow-cooked mutton in a rich tomato masala</p></article>
+          <article class="menu-item" data-category="karahi"><h3>Chicken White Handi</h3><span class="price">Rs 1,250</span><p>Boneless chicken, cream, yoghurt and black pepper</p></article>
+          <article class="menu-item" data-category="karahi"><h3>Daal Fry</h3><span class="price">Rs 350</span><p>Yellow lentils, cumin and garlic tarka</p></article>
+          <article class="menu-item" data-category="rice"><h3>Chicken Biryani</h3><span class="price">Rs 320</span><p>Long-grain rice, spiced chicken and fried onion</p></article>
+          <article class="menu-item" data-category="rice"><h3>Mutton Pulao</h3><span class="price">Rs 520</span><p>Yakhni rice with tender mutton and whole spices</p></article>
+          <article class="menu-item" data-category="rice"><h3>Zeera Rice</h3><span class="price">Rs 240</span><p>Steamed basmati with toasted cumin</p></article>
+          <article class="menu-item" data-category="rice"><h3>Family Biryani Platter</h3><span class="price">Rs 1,250</span><p>Serves four, with raita and fresh salad</p></article>
+          <article class="menu-item" data-category="breads"><h3>Roghni Naan</h3><span class="price">Rs 60</span><p>Sesame-topped, soft tandoor bread</p></article>
+          <article class="menu-item" data-category="breads"><h3>Garlic Naan</h3><span class="price">Rs 90</span><p>Fresh garlic, butter and coriander</p></article>
+          <article class="menu-item" data-category="breads"><h3>Lachha Paratha</h3><span class="price">Rs 110</span><p>Flaky layered whole-wheat bread</p></article>
+          <article class="menu-item" data-category="desserts"><h3>Gulab Jamun (4 pcs)</h3><span class="price">Rs 250</span><p>Warm milk dumplings in cardamom syrup</p></article>
+          <article class="menu-item" data-category="desserts"><h3>Kheer</h3><span class="price">Rs 280</span><p>Slow-cooked rice pudding with pistachio</p></article>
+          <article class="menu-item" data-category="desserts"><h3>Shahi Tukray</h3><span class="price">Rs 320</span><p>Caramelised bread, saffron milk and almonds</p></article>
+          <article class="menu-item" data-category="beverages"><h3>Fresh Lime Soda</h3><span class="price">Rs 180</span><p>Sweet, salted or mixed</p></article>
+          <article class="menu-item" data-category="beverages"><h3>Mint Margarita</h3><span class="price">Rs 220</span><p>Lime, mint and crushed ice</p></article>
+          <article class="menu-item" data-category="beverages"><h3>Sweet Lassi</h3><span class="price">Rs 200</span><p>Chilled yoghurt drink, lightly sweetened</p></article>
+          <article class="menu-item" data-category="beverages"><h3>Karak Chai</h3><span class="price">Rs 140</span><p>Strong milk tea with cardamom</p></article>
+        </div>
+      </div>
+    </section>
+
+    <section class="gallery" id="gallery">
+      <div class="container"><div class="section-heading"><span class="section-kicker">A feast for the eyes</span><h2>House favourites</h2><p>Original stylized food illustrations created for this demo—no stock photography.</p></div>
+        <div class="gallery-grid">
+          <figure class="food-card"><div class="food-art"><div class="karahi-mini" aria-hidden="true"></div></div><figcaption>Chicken Karahi</figcaption></figure>
+          <figure class="food-card"><div class="food-art"><div class="mini-plate" aria-hidden="true"><div class="rice"></div></div></div><figcaption>Chicken Biryani</figcaption></figure>
+          <figure class="food-card"><div class="food-art"><div class="kebab-set" aria-hidden="true"><i class="skewer s1"></i><i class="skewer s2"></i><i class="skewer s3"></i></div></div><figcaption>Seekh Kabab</figcaption></figure>
+          <figure class="food-card"><div class="food-art"><div class="naan" aria-hidden="true"></div></div><figcaption>Roghni Naan</figcaption></figure>
+          <figure class="food-card"><div class="food-art"><div class="handi" aria-hidden="true"></div></div><figcaption>Chicken Handi</figcaption></figure>
+          <figure class="food-card"><div class="food-art"><div class="tikka" aria-hidden="true"><i></i><i></i><i></i></div></div><figcaption>Chicken Tikka</figcaption></figure>
+          <figure class="food-card"><div class="food-art"><div class="dessert" aria-hidden="true"><i></i><i></i><i></i></div></div><figcaption>Gulab Jamun</figcaption></figure>
+          <figure class="food-card"><div class="food-art"><div class="lassi" aria-hidden="true"></div></div><figcaption>Sweet Lassi</figcaption></figure>
+        </div>
+      </div>
+    </section>
+
+    <section class="service" id="hours">
+      <div class="container service-grid">
+        <div class="hours-panel"><h2>Opening hours</h2><div class="hours-list"><div class="hours-row"><span>Monday–Thursday</span><strong>12:00 PM – 12:00 AM</strong></div><div class="hours-row"><span>Friday</span><strong>12:00 PM – 12:00 AM</strong></div><div class="hours-row"><span>Saturday–Sunday</span><strong>12:00 PM – 12:00 AM</strong></div></div><p class="friday-note"><strong>Friday prayer break:</strong><br>Kitchen pauses from 1:00–2:30 PM.</p></div>
+        <div class="reservation" id="reservation"><span class="section-kicker">Plan your table</span><h2>Request a reservation</h2><p>Complete the form to preview the booking experience on this demo.</p>
+          <form id="booking-form" novalidate>
+            <div class="form-grid">
+              <div class="field"><label for="name">Your name</label><input id="name" name="name" autocomplete="name" required><span class="error" id="name-error"></span></div>
+              <div class="field"><label for="phone">Phone number</label><input id="phone" name="phone" type="tel" inputmode="tel" autocomplete="tel" placeholder="03XX XXXXXXX" required><span class="error" id="phone-error"></span></div>
+              <div class="field"><label for="date">Preferred date</label><input id="date" name="date" type="date" required><span class="error" id="date-error"></span></div>
+              <div class="field"><label for="guests">Guests</label><select id="guests" name="guests" required><option value="">Choose party size</option><option>1 guest</option><option>2 guests</option><option>3 guests</option><option>4 guests</option><option>5 guests</option><option>6 guests</option><option>7–10 guests</option></select><span class="error" id="guests-error"></span></div>
+            </div>
+            <div class="form-actions"><button class="btn" type="submit">Request table</button><span class="form-disclaimer">Demo only — no reservation will be sent.</span></div>
+          </form>
+          <div class="success-box" id="success-box" role="status" tabindex="-1"><h3>Table request previewed.</h3><p>This is a front-end demo, so nothing was sent. In a live site, the restaurant would confirm your table by phone.</p></div>
+        </div>
+      </div>
+    </section>
+
+    <section class="location" id="contact">
+      <div class="container location-grid">
+        <div class="location-copy"><span class="section-kicker">Find the demo</span><h2>Come hungry.</h2><address>12-B Main Market<br>DHA Phase 5, Lahore<br><small>(demo address)</small></address><a href="tel:+923000000000">+92 300 0000000</a><p class="placeholder-note">Placeholder phone number · This fictional location is not for navigation.</p></div>
+        <div class="locator-panel" aria-label="Decorative location placeholder, not a real map"><div class="locator-card"><div class="pin" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none"><circle cx="12" cy="10" r="3" stroke="currentColor" stroke-width="2"/><path d="M19 10c0 5-7 11-7 11S5 15 5 10a7 7 0 1 1 14 0Z" stroke="currentColor" stroke-width="2"/></svg></div><strong>DHA Phase 5, Lahore</strong><span>Location preview for this fictional concept</span></div></div>
+      </div>
+    </section>
+  </main>
+
+  <footer><div class="container footer-wrap"><div><strong>Demo website crafted by LumenMirage Studio</strong><p>Spice Route Kitchen is a fictional demo business. Menu, address and contact details are illustrative.</p></div><a class="back-top" href="#home">Back to top ↑</a></div></footer>
+
+  <script>
+    (function () {
+      var toggle = document.querySelector('.menu-toggle');
+      var menu = document.getElementById('main-menu');
+      function closeMenu() {
+        toggle.setAttribute('aria-expanded', 'false');
+        toggle.setAttribute('aria-label', 'Open navigation menu');
+        menu.classList.remove('open');
+        document.body.classList.remove('nav-open');
+      }
+      toggle.addEventListener('click', function () {
+        var isOpen = toggle.getAttribute('aria-expanded') === 'true';
+        toggle.setAttribute('aria-expanded', String(!isOpen));
+        toggle.setAttribute('aria-label', isOpen ? 'Open navigation menu' : 'Close navigation menu');
+        menu.classList.toggle('open', !isOpen);
+        document.body.classList.toggle('nav-open', !isOpen);
+      });
+      menu.querySelectorAll('a').forEach(function (link) { link.addEventListener('click', closeMenu); });
+      document.addEventListener('keydown', function (event) { if (event.key === 'Escape') closeMenu(); });
+
+      var tabs = document.querySelectorAll('.tab');
+      var items = document.querySelectorAll('.menu-item');
+      tabs.forEach(function (tab) {
+        tab.addEventListener('click', function () {
+          var filter = tab.getAttribute('data-filter');
+          tabs.forEach(function (other) { other.setAttribute('aria-selected', String(other === tab)); });
+          items.forEach(function (item) { item.hidden = filter !== 'all' && item.getAttribute('data-category') !== filter; });
+        });
+      });
+
+      var form = document.getElementById('booking-form');
+      var success = document.getElementById('success-box');
+      var dateInput = document.getElementById('date');
+      var today = new Date();
+      var localToday = new Date(today.getTime() - today.getTimezoneOffset() * 60000).toISOString().split('T')[0];
+      dateInput.min = localToday;
+
+      function setError(id, message) {
+        var field = document.getElementById(id);
+        var error = document.getElementById(id + '-error');
+        field.setAttribute('aria-invalid', message ? 'true' : 'false');
+        error.textContent = message;
+      }
+      form.addEventListener('submit', function (event) {
+        event.preventDefault();
+        var name = document.getElementById('name');
+        var phone = document.getElementById('phone');
+        var guests = document.getElementById('guests');
+        var phoneDigits = phone.value.replace(/\D/g, '');
+        setError('name', name.value.trim().length < 2 ? 'Please enter your name.' : '');
+        setError('phone', phoneDigits.length < 10 || phoneDigits.length > 13 ? 'Enter a valid Pakistani phone number.' : '');
+        setError('date', !dateInput.value ? 'Choose a date.' : (dateInput.value < localToday ? 'Choose today or a future date.' : ''));
+        setError('guests', !guests.value ? 'Choose the number of guests.' : '');
+        var firstInvalid = form.querySelector('[aria-invalid="true"]');
+        if (firstInvalid) { firstInvalid.focus(); return; }
+        form.hidden = true;
+        success.classList.add('show');
+        success.focus();
+      });
+      form.querySelectorAll('input, select').forEach(function (field) {
+        field.addEventListener('input', function () { setError(field.id, ''); });
+      });
+    }());
+  </script>
+</body>
+</html>
