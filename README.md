@@ -5,4 +5,4 @@ Shows the quality of a modern small-business website — menu, ambience, reserva
 ## Tech
 Single self-contained static HTML file (index.html). No build step — deploy as-is on any static host.
 ## Live site
-<fill in the Vercel URL after deployment>
+https://demo-spice-route-kitchen.vercel.app
